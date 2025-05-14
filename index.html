@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Client</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      #messages {
+        height: 300px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        padding: 10px;
+        overflow-y: auto;
+      }
+      #messageInput {
+        width: 70%;
+        padding: 5px;
+      }
+      button {
+        padding: 5px 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WebSocket Chat</h1>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+      const ws = new WebSocket("ws://localhost:8080");
+      const messagesDiv = document.getElementById("messages");
+      const messageInput = document.getElementById("messageInput");
+
+      ws.onopen = () => {
+        appendMessage("Connected to server");
+      };
+
+      ws.onmessage = (event) => {
+        appendMessage(`Received: ${event.data}`);
+      };
+
+      ws.onclose = () => {
+        appendMessage("Disconnected from server");
+      };
+
+      ws.onerror = (error) => {
+        appendMessage("Error: " + error.message);
+      };
+
+      function sendMessage() {
+        const message = messageInput.value;
+        if (message) {
+          ws.send(message);
+          messageInput.value = "";
+        }
+      }
+
+      function appendMessage(message) {
+        const messageElement = document.createElement("div");
+        messageElement.textContent = message;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+
+      // Allow sending message with Enter key
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          sendMessage();
+        }
+      });
+    </script>
+  </body>
+</html>
