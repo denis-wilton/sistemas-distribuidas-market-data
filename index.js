@@ -21,9 +21,6 @@ function createBroker({ sendPriceChange }) {
     PETR4: createAsset("PETR4"),
     VALE3: createAsset("VALE3"),
     BBDC4: createAsset("BBDC4"),
-    ITUB4: createAsset("ITUB4"),
-    B3SA3: createAsset("B3SA3"),
-    MGLU3: createAsset("MGLU3"),
   };
 
   function tick() {
