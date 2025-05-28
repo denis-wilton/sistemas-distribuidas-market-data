@@ -12,36 +12,38 @@ function createAsset(name) {
   };
 }
 
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 function createBroker({ sendPriceChange }) {
   const assets = {
     PETR4: createAsset("PETR4"),
     VALE3: createAsset("VALE3"),
     BBDC4: createAsset("BBDC4"),
     ITUB4: createAsset("ITUB4"),
+    B3SA3: createAsset("B3SA3"),
+    MGLU3: createAsset("MGLU3"),
   };
 
   function tick() {
     for (const asset of Object.values(assets)) {
-      if (Math.random() > 0.2) {
-        continue;
-      }
-      const min = 0.001;
-      const max = 0.2;
-      const positiveOrNegative = Math.random() > 0.5 ? 1 : -1;
+      // 20% de chance de não alterar o ativo
+      if (Math.random() > 0.8) continue;
 
-      const floatChange = Math.random() * (max - min) + min;
-
-      asset.price =
-        asset.price + floatChange * asset.price * positiveOrNegative;
       asset.lastPrice = asset.price;
+
+      asset.price = asset.lastPrice * (1 + randomBetween(-5, 5) / 100);
       asset.lastPriceTime = Date.now();
+
+      // Envia evento de alteração
       sendPriceChange(asset);
     }
 
-    setTimeout(tick, Math.floor(Math.random() * 200) + 30);
+    setTimeout(tick, 16.67);
   }
 
-  setTimeout(tick, 100);
+  setTimeout(tick, 16.67);
 }
 
 const commands = {
